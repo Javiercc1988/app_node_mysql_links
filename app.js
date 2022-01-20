@@ -5,6 +5,15 @@ var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 var favicon = require("serve-favicon");
 
+
+
+const flash = require("connect-flash");
+const session = require("express-session")
+const MySQLStore = require("express-mysql-session")
+const {database} = require("./keys")
+
+
+
 var { engine } = require("express-handlebars");
 
 
@@ -31,6 +40,14 @@ app.engine(
 
 app.set("view engine", ".hbs");
 
+app.use(session({
+  secret: "1234",
+  resave: false,
+  saveUninitialized: false,
+  store: new MySQLStore(database)
+}));
+
+
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -40,8 +57,14 @@ app.use(express.static(path.join(__dirname, "public")));
 /********************************* */
 app.use(favicon(path.join(__dirname, "public", "favicon.ico")));
 
+
+app.use(flash())
+
+
 // VARIABLES GLOBALES (PODEMOS ACCEDER DESDE CUALQUIER SITIO)
 app.use((req,res,next) => {
+
+  app.locals.success = req.flash("success")
   next();
 });
 

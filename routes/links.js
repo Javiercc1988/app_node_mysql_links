@@ -18,6 +18,7 @@ router.post("/add", async function (req, res, next) {
   };
 
   await pool.query("INSERT INTO links SET ?", [newLink]);
+  req.flash("success","El link se ha guardado correctamente")
   res.redirect("/links");
 });
 
@@ -41,13 +42,11 @@ router.get("/edit/:id", async function (req, res, next) {
 
   const links = await pool.query("SELECT * FROM links WHERE id=?;", [id]);
 
-  res.render("links/edit",links[0]);
+  res.render("links/edit", links[0]);
 });
 
-
 router.post("/edit/:id", async function (req, res, next) {
-
-  const {id} = req.params
+  const { id } = req.params;
   const { title, url, description } = req.body;
 
   const newLink = {
@@ -56,7 +55,7 @@ router.post("/edit/:id", async function (req, res, next) {
     description,
   };
 
-  await pool.query(`UPDATE links SET ? WHERE id=?`, [newLink,id]);
+  await pool.query(`UPDATE links SET ? WHERE id=?`, [newLink, id]);
   res.redirect("/links");
 });
 
