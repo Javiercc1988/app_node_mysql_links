@@ -5,7 +5,6 @@ var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 var favicon = require("serve-favicon");
 
-
 /******************************************/
 const flash = require("connect-flash");
 const session = require("express-session");
@@ -13,8 +12,6 @@ const MySQLStore = require("express-mysql-session");
 const { database } = require("./keys");
 const passport = require("passport");
 /******************************************/
-
-
 
 var { engine } = require("express-handlebars");
 
@@ -26,8 +23,7 @@ var linksRouter = require("./routes/links");
 
 var app = express();
 
-
-require("./lib/passport")
+require("./lib/passport");
 
 app.set("views", path.join(__dirname, "views"));
 app.engine(
@@ -61,7 +57,7 @@ app.use(express.static(path.join(__dirname, "public")));
 /********************************* */
 app.use(favicon(path.join(__dirname, "public", "favicon.ico")));
 app.use(passport.initialize());
-app.use(passport.session())
+app.use(passport.session());
 
 app.use(flash());
 /********************************* */

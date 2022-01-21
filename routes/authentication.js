@@ -23,17 +23,16 @@ router.post("/signup", async function (req, res, next) {
     failureFlash: true,
   });
   console.log(req.body)
-  res.send("usuario registrado")
-  // const { username, password, email, fullname } = req.body;
-  // const newUser = {
-  //   fullname,
-  //   username,
-  //   email,
-  //   password,
-  // };
+  const { username, password, email, fullname } = req.body;
+  const newUser = {
+    fullname,
+    username,
+    email,
+    password,
+  };
 
-  // await pool.query("INSERT INTO users SET ?", [newUser]);
-  // res.redirect("auth/signup");
+  await pool.query("INSERT INTO users SET ?", [newUser]);
+  res.redirect("auth/signup");
 });
 
 module.exports = router;
