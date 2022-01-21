@@ -6,25 +6,28 @@ var logger = require("morgan");
 var favicon = require("serve-favicon");
 
 
-
+/******************************************/
 const flash = require("connect-flash");
-const session = require("express-session")
-const MySQLStore = require("express-mysql-session")
-const {database} = require("./keys")
+const session = require("express-session");
+const MySQLStore = require("express-mysql-session");
+const { database } = require("./keys");
+const passport = require("passport");
+/******************************************/
 
 
 
 var { engine } = require("express-handlebars");
 
-
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
 
-var authenticationRouter = require("./routes/authentication")
-var linksRouter = require("./routes/links")
-
+var authenticationRouter = require("./routes/authentication");
+var linksRouter = require("./routes/links");
 
 var app = express();
+
+
+require("./lib/passport")
 
 app.set("views", path.join(__dirname, "views"));
 app.engine(
@@ -40,13 +43,14 @@ app.engine(
 
 app.set("view engine", ".hbs");
 
-app.use(session({
-  secret: "1234",
-  resave: false,
-  saveUninitialized: false,
-  store: new MySQLStore(database)
-}));
-
+app.use(
+  session({
+    secret: "1234",
+    resave: false,
+    saveUninitialized: false,
+    store: new MySQLStore(database),
+  })
+);
 
 app.use(logger("dev"));
 app.use(express.json());
@@ -56,25 +60,23 @@ app.use(express.static(path.join(__dirname, "public")));
 
 /********************************* */
 app.use(favicon(path.join(__dirname, "public", "favicon.ico")));
+app.use(passport.initialize());
+app.use(passport.session())
 
-
-app.use(flash())
-
+app.use(flash());
+/********************************* */
 
 // VARIABLES GLOBALES (PODEMOS ACCEDER DESDE CUALQUIER SITIO)
-app.use((req,res,next) => {
-
-  app.locals.success = req.flash("success")
+app.use((req, res, next) => {
+  app.locals.success = req.flash("success");
   next();
 });
 
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
 
-app.use("/authentication", authenticationRouter)
-app.use("/links",linksRouter)
-
-
+app.use("/authentication", authenticationRouter);
+app.use("/links", linksRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
