@@ -18,7 +18,7 @@ router.post("/add", async function (req, res, next) {
   };
 
   await pool.query("INSERT INTO links SET ?", [newLink]);
-  req.flash("success","El link se ha guardado correctamente")
+  req.flash("success", "El link se ha guardado correctamente");
   res.redirect("/links");
 });
 
