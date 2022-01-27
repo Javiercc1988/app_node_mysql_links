@@ -8,7 +8,7 @@ router.get("/", function (req, res, next) {
   res.send("AUTHENTICATION!");
 });
 router.get("/profile", function (req, res, next) {
-  res.send("Profile!");
+  res.render("profile");
 });
 
 /****************** RUTAS PARA REGISTRO ******************/

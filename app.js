@@ -65,7 +65,8 @@ app.use(flash());
 // VARIABLES GLOBALES (PODEMOS ACCEDER DESDE CUALQUIER SITIO)
 app.use((req, res, next) => {
   app.locals.success = req.flash("success");
-  app.locals.errorlog = req.flash("errorlog")
+  app.locals.errorlog = req.flash("errorlog");
+  app.locals.user = req.user;
   next();
 });
 
