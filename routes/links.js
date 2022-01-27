@@ -4,6 +4,14 @@ const pool = require("../database");
 
 const { isLoggedIn, isNotLoggedIn } = require("../lib/protect");
 
+/* LISTAR TODOS LOS LINKS */
+router.get("/", isLoggedIn, async function (req, res, next) {
+  const { id } = req.user;
+
+  const links = await pool.query("SELECT * FROM links WHERE user_id = ?", [id]);
+  res.render("links/list", { links });
+});
+
 /******************* E D I T A D O    D E      L I N K S *******************/
 router.get("/add", isLoggedIn, function (req, res, next) {
   res.render("links/add");
@@ -12,10 +20,13 @@ router.get("/add", isLoggedIn, function (req, res, next) {
 /******************* A Ñ A D I R   L I N K S *******************/
 router.post("/add", isLoggedIn, async function (req, res, next) {
   const { title, url, description } = req.body;
+  const { id } = req.user;
+  user_id = id;
 
   const newLink = {
     title,
     url,
+    user_id,
     description,
   };
 
@@ -32,12 +43,6 @@ router.get("/delete/:id", isLoggedIn, async function (req, res, next) {
   req.flash("success", "El link se ha borrado correctamente");
 
   res.redirect("/links");
-});
-
-/* LISTAR TODOS LOS LINKS */
-router.get("/", isLoggedIn, async function (req, res, next) {
-  const links = await pool.query("SELECT * FROM links");
-  res.render("links/list", { links });
 });
 
 /******************* E D I T A D O    D E      L I N K S *******************/
@@ -63,9 +68,5 @@ router.post("/edit/:id", isLoggedIn, async function (req, res, next) {
   req.flash("success", "El link se ha actualizado correctamente");
   res.redirect("/links");
 });
-
-
-
-
 
 module.exports = router;

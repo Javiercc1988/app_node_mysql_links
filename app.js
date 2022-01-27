@@ -16,7 +16,6 @@ const passport = require("passport");
 var { engine } = require("express-handlebars");
 
 var indexRouter = require("./routes/index");
-var usersRouter = require("./routes/users");
 
 var authenticationRouter = require("./routes/authentication");
 var linksRouter = require("./routes/links");
@@ -71,7 +70,6 @@ app.use((req, res, next) => {
 });
 
 app.use("/", indexRouter);
-app.use("/users", usersRouter);
 
 app.use("/authentication", authenticationRouter);
 app.use("/links", linksRouter);
