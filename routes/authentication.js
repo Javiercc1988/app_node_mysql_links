@@ -8,6 +8,8 @@ router.get("/", function (req, res, next) {
   res.send("AUTHENTICATION!");
 });
 
+/****************** RUTAS PARA REGISTRO ******************/
+
 router.get("/signup", function (req, res, next) {
   res.render("auth/signup");
 });
@@ -20,5 +22,19 @@ router.post(
     failureFlash: true,
   })
 );
+
+/****************** RUTAS PARA LOGIN ******************/
+
+router.get("/signin", function (req, res, next) {
+  res.render("auth/signin");
+});
+
+router.post("/signin", (req, res, next) => {
+  passport.authenticate("local.signin", {
+    successRedirect: "/authentication/profile",
+    failureRedirect: "/authentication/signin",
+    failureFlash: true,
+  })(req, res, next);
+});
 
 module.exports = router;
