@@ -7,6 +7,9 @@ const passport = require("passport");
 router.get("/", function (req, res, next) {
   res.send("AUTHENTICATION!");
 });
+router.get("/profile", function (req, res, next) {
+  res.send("Profile!");
+});
 
 /****************** RUTAS PARA REGISTRO ******************/
 
