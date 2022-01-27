@@ -3,7 +3,7 @@ var router = express.Router();
 const pool = require("../database");
 const passport = require("passport");
 
-const { isLoggedIn } = require("../lib/protect");
+const { isLoggedIn, isNotLoggedIn } = require("../lib/protect");
 
 /* GET home page. */
 router.get("/", function (req, res, next) {
@@ -12,12 +12,13 @@ router.get("/", function (req, res, next) {
 
 /****************** RUTAS PARA REGISTRO ******************/
 
-router.get("/signup", function (req, res, next) {
+router.get("/signup", isNotLoggedIn, function (req, res, next) {
   res.render("auth/signup");
 });
 
 router.post(
   "/signup",
+  isNotLoggedIn,
   passport.authenticate("local.signup", {
     successRedirect: "/authentication/profile",
     failureRedirect: "/authentication/signup",
@@ -27,11 +28,11 @@ router.post(
 
 /****************** RUTAS PARA LOGIN ******************/
 
-router.get("/signin", function (req, res, next) {
+router.get("/signin", isNotLoggedIn, function (req, res, next) {
   res.render("auth/signin");
 });
 
-router.post("/signin", (req, res, next) => {
+router.post("/signin", isNotLoggedIn, (req, res, next) => {
   passport.authenticate("local.signin", {
     successRedirect: "/authentication/profile",
     failureRedirect: "/authentication/signin",
@@ -47,7 +48,7 @@ router.get("/profile", isLoggedIn, function (req, res) {
 
 /****************** RUTAS LOGOUT ******************/
 
-router.get("/logout", (req, res) => {
+router.get("/logout", isLoggedIn, (req, res) => {
   req.logOut();
 
   res.redirect("/authentication/signin");
