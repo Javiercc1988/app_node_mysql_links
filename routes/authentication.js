@@ -3,12 +3,11 @@ var router = express.Router();
 const pool = require("../database");
 const passport = require("passport");
 
+const { isLoggedIn } = require("../lib/protect");
+
 /* GET home page. */
 router.get("/", function (req, res, next) {
   res.send("AUTHENTICATION!");
-});
-router.get("/profile", function (req, res, next) {
-  res.render("profile");
 });
 
 /****************** RUTAS PARA REGISTRO ******************/
@@ -38,6 +37,20 @@ router.post("/signin", (req, res, next) => {
     failureRedirect: "/authentication/signin",
     failureFlash: true,
   })(req, res, next);
+});
+
+/****************** RUTAS PERFIL ******************/
+
+router.get("/profile", isLoggedIn, function (req, res) {
+  res.render("profile");
+});
+
+/****************** RUTAS LOGOUT ******************/
+
+router.get("/logout", (req, res) => {
+  req.logOut();
+
+  res.redirect("/authentication/signin");
 });
 
 module.exports = router;
