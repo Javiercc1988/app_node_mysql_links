@@ -37,12 +37,28 @@ router.post("/add", isLoggedIn, async function (req, res, next) {
 
 /******************* B O R R A D O    D E      L I N K S *******************/
 router.get("/delete/:id", isLoggedIn, async function (req, res, next) {
+
   const { id } = req.params;
 
-  await pool.query("DELETE FROM links WHERE id=?;", [id]);
-  req.flash("success", "El link se ha borrado correctamente");
+  const id_usuario = req.user.id;
+  console.log(id_usuario)
 
-  res.redirect("/links");
+  const user_id = await pool.query("SELECT user_id FROM links WHERE id = ?;", [id]);
+  console.log(user_id[0].user_id)
+
+  if (user_id[0].user_id === id_usuario) {
+
+    await pool.query("DELETE FROM links WHERE id=?;", [id]);
+    req.flash("success", "El link se ha borrado correctamente");
+    res.redirect("/links");
+
+  } else {
+
+    req.flash("errorlog", "Ese link no pertenece a tu usuario");
+    res.redirect("/profile");
+    
+  }
+  
 });
 
 /******************* E D I T A D O    D E      L I N K S *******************/

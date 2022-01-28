@@ -4,6 +4,7 @@ const pool = require("../database");
 const passport = require("passport");
 
 const { isLoggedIn, isNotLoggedIn } = require("../lib/protect");
+const helpers = require("../lib/helpers");
 
 /* GET home page. */
 router.get("/", function (req, res, next) {
@@ -54,4 +55,26 @@ router.get("/logout", isLoggedIn, (req, res) => {
   res.redirect("/authentication/signin");
 });
 
+/****************** RUTAS PARA PASS RECOVERY ******************/
+
+router.get("/passrecovery", isNotLoggedIn, function (req, res, next) {
+  res.render("auth/passrecovery");
+});
+
+router.post("/passrecovery", isNotLoggedIn, async (req, res, next) => {
+  let existe = await helpers.existeUsuario(req.body.username);
+  console.log(existe);
+
+  if (existe) {
+    req.flash("success", `Mensaje enviado a su correo`);
+    res.redirect("/authentication/signin");
+
+  } else {
+
+    req.flash("errorlog", `El usuario ${req.body.username} no existe`);
+    res.redirect("/authentication/signup");
+  }
+});
+
 module.exports = router;
+
